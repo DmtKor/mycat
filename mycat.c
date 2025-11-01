@@ -32,6 +32,12 @@ RETURN CODES
 #define FLAG_E (char)((0b0100))
 #define FLAG_H (char)((0b1000))
 
+// Color codes
+#define RED     "\033[0;31m"
+#define GREEN   "\033[0;32m"
+#define MAGENTA "\033[0;35m"
+#define RESET   "\033[0m"
+
 #define BUF_MAX_SIZE (1024)
 
 void fail(const char *msg, int status)
@@ -58,8 +64,8 @@ void parse_flags(const char *str, char *cur_flags)
             *cur_flags |= FLAG_H;
         else
         {
-            char msg[24] = "Error - invalid flag: $";
-            msg[22] = str[i];
+            char msg[] = RED "Error - invalid flag: $" RESET;
+            msg[29] = str[i];
             fail(msg, 1);
         }
     }
@@ -125,14 +131,14 @@ void print_file(char *buf, FILE *fd, const char *flags)
         }
         /* FLAG_N/B (numeration) handling */
         if (flag_n) {
-            printf("\t%ld\t", counter);
+            printf(GREEN "\t%ld\t" RESET, counter);
         }
         if (flag_b)
         {
             putc('\t', stdout);
             if (!empty) 
             {
-                printf("%ld\t", counter);
+                printf(GREEN "%ld\t" RESET, counter);
             }
             else 
             {
@@ -143,7 +149,7 @@ void print_file(char *buf, FILE *fd, const char *flags)
         if (*flags & FLAG_E)
         {
             fputs(buf, stdout);
-            puts("$");
+            puts(MAGENTA "$" RESET);
         }
         else
             puts(buf);
@@ -191,7 +197,7 @@ int main(int argc, char **argv)
         fd[i] = fopen(filenames[i], "r");
         if (fd[i] == NULL)
         {
-            fail("Error - couldn't open the file", 2);
+            fail(RED "Error - couldn't open the file" RESET, 2);
         }
     }
     if (n_files == 0)
