@@ -22,7 +22,7 @@ RETURN CODES
 1   Error: invalid flag
 2   Error: no access to file (no permission or file does not exist)
 */
-#include <stdlib.h>   // malloc
+#include <stdlib.h>   // malloc, free
 #include <string.h>   // strlen
 #include <stdio.h>    // puts, fgets, fputs, printf, fopen
 #include <inttypes.h> // PRIu64
@@ -89,7 +89,7 @@ void print_file(char *buf, FILE *fd, const char *flags)
     short empty_l = 0;
     char *res = buf;
     char empty = 0;
-    long counter = 0;
+    static long counter = 0;
     while (1)
     {
         /* Reading */
@@ -98,7 +98,7 @@ void print_file(char *buf, FILE *fd, const char *flags)
         {
             break;
         }
-        replace_char_once(buf, '\n', '\0');
+        replace_char_once(buf, '\n', '\0'); // delete newline
         /* Empty line handling  */
         if (buf[0] == '\0')
         {
@@ -113,21 +113,32 @@ void print_file(char *buf, FILE *fd, const char *flags)
             empty_l = 0;
         }
         /* Counter */
-        if (*flags & FLAG_N)
+        char flag_n = *flags & FLAG_N;
+        char flag_b = *flags & FLAG_B;
+        if (flag_n)
         {
             counter++;
         }
-        else if ((*flags & FLAG_B) && !empty)
+        else if (flag_b && !empty)
         {
             counter++;
         }
         /* FLAG_N/B (numeration) handling */
-        if ((*flags & FLAG_N) || (*flags & FLAG_B))
+        if (flag_n) {
+            printf("\t%ld\t", counter);
+        }
+        if (flag_b)
+        {
             putc('\t', stdout);
-        if ((*flags & FLAG_N) || (!empty && (*flags & FLAG_B)))
-            printf("%ld\t", counter);
-        else if ((*flags & FLAG_N) || (*flags & FLAG_B))
-            putc('\t', stdout);
+            if (!empty) 
+            {
+                printf("%ld\t", counter);
+            }
+            else 
+            {
+                putc('\t', stdout);
+            }
+        }
         /* Printing ($ on end with FLAG_E) */
         if (*flags & FLAG_E)
         {
