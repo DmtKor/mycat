@@ -22,7 +22,6 @@ RETURN CODES
 1   Error: invalid flag
 2   Error: no access to file (no permission or file does not exist)
 */
-#include <stdlib.h>   // malloc, free
 #include <string.h>   // strlen
 #include <stdio.h>    // puts, fgets, fputs, printf, fopen
 #include <inttypes.h> // PRIu64
@@ -167,9 +166,9 @@ int main(int argc, char **argv)
     /* Data */
     char flags = 0;
     int n_files = 0;
-    FILE **fd = malloc(sizeof(FILE *) * argc);
-    char **filenames = malloc(sizeof(char *) * argc);
-    char *buf = malloc(sizeof(char) * BUF_MAX_SIZE + 2);
+    FILE *fd[argc];
+    char *filenames[argc];
+    char buf[BUF_MAX_SIZE];
 
     /* Check for help and version commands */
     if (argc > 1) 
@@ -228,10 +227,6 @@ int main(int argc, char **argv)
     {
         print_file(buf, fd[i], &flags);
     }
-
-    free(fd);
-    free(filenames);
-    free(buf);
 
     return 0;
 }
