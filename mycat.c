@@ -4,12 +4,12 @@ Concatenate files and print on the standard output.
 
 
 SYNOPSIS
-mycat [OPTION]... [FILE]...:
+mycat [OPTION]... [FILE]... :
 With no FILE, or when FILE is -, read standard input.
-mycat help:
+mycat help :
 Show this message and exit.
-mycat version:
-Show version.
+mycat version :
+Show version and exit.
 
 OPTIONS
 -n  Number all lines.
@@ -26,6 +26,8 @@ RETURN CODES
 #include <string.h>   // strlen
 #include <stdio.h>    // puts, fgets, fputs, printf, fopen
 #include <inttypes.h> // PRIu64
+
+#include "msg.h" // Messages
 
 #define FLAG_N (char)((0b0001))
 #define FLAG_B (char)((0b0010))
@@ -121,7 +123,7 @@ void print_file(char *buf, FILE *fd, const char *flags)
         /* Counter */
         char flag_n = *flags & FLAG_N;
         char flag_b = *flags & FLAG_B;
-        if (flag_n)
+        if (flag_n && !flag_b)
         {
             counter++;
         }
@@ -130,7 +132,7 @@ void print_file(char *buf, FILE *fd, const char *flags)
             counter++;
         }
         /* FLAG_N/B (numeration) handling */
-        if (flag_n) {
+        if (flag_n && !flag_b) {
             printf(GREEN "\t%ld\t" RESET, counter);
         }
         if (flag_b)
@@ -168,6 +170,21 @@ int main(int argc, char **argv)
     FILE **fd = malloc(sizeof(FILE *) * argc);
     char **filenames = malloc(sizeof(char *) * argc);
     char *buf = malloc(sizeof(char) * BUF_MAX_SIZE + 2);
+
+    /* Check for help and version commands */
+    if (argc > 1) 
+    {
+        if (argv[1][0] == 'h' && !strcmp(argv[1], "help"))
+        {
+            puts(help_msg);
+            _Exit(0);
+        }
+        else if (argv[1][0] == 'v' && !strcmp(argv[1], "version"))
+        {
+            puts(version_msg);
+            _Exit(0);
+        }
+    }
 
     /* Parsing arguments */
     for (int i = 1; i < argc; i++)

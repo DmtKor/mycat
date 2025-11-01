@@ -1,0 +1,20 @@
+const char *version_msg = "mycat v0.0.1";
+
+const char *help_msg = "Kind of copy of original cat.\n"
+                       "Concatenate files and print on the standard output.\n\n"
+                       "SYNOPSIS\n"
+                       "mycat [OPTION]... [FILE]... :\n"
+                       "With no FILE, or when FILE is -, read standard input.\n"
+                       "mycat help :\n"
+                       "Show this message and exit.\n"
+                       "mycat version :\n"
+                       "Show version and exit.\n\n"
+                       "OPTIONS\n"
+                       "-n  Number all lines.\n"
+                       "-b  Number nonempty lines (-nb works like -b).\n"
+                       "-e  Display $ at the end of each line.\n"
+                       "-h  Hide repeated empty lines.\n\n"
+                       "RETURN CODES\n"
+                       "0   Success\n"
+                       "1   Error: invalid flag\n"
+                       "2   Error: no access to file (no permission or file does not exist)\n";
